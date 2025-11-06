@@ -1,4 +1,4 @@
-# 🎮 WPF Game of Life
+# WPF Game of Life
 
 A C# and WPF implementation of John Horton Conway's "Game of Life".
 
