@@ -10,13 +10,14 @@ namespace GameOfLife.WPF.ViewModels
     {
         // Commands
         public ICommand StepCommand { get; }
+        public ICommand RandomizeCommand { get; }
+        public ICommand ClearCommand { get; }
 
         private GameBoard _gameBoard;
         private GameState _gameState;
 
-        private const int CellSize = 5;
-        public int BoardWidthPixels => _gameBoard.Width * CellSize;
-        public int BoardHeightPixels => _gameBoard.Height * CellSize;
+        public double BoardWidthPixels => _gameBoard.Width * AppConfig.CellSize;
+        public double BoardHeightPixels => _gameBoard.Height * AppConfig.CellSize;
 
         public ObservableCollection<Point> CellsToDisplay { get; set; }
 
@@ -72,12 +73,13 @@ namespace GameOfLife.WPF.ViewModels
             CellsToDisplay = new ObservableCollection<Point>();
 
             RulesText = "B3/S23";
-            UpdateStatistics();
 
             StepCommand = new RelayCommand(ExecuteStep);
+            RandomizeCommand = new RelayCommand(ExecuteRandomize);
+            ClearCommand = new RelayCommand(ExecuteReset);
 
-            _gameBoard.GenerateRandom(0.25);
-            RefreshDisplay();
+            _gameBoard.GenerateRandom();
+            UpdateStatistics();
         }
 
         private void ExecuteStep()
@@ -85,7 +87,22 @@ namespace GameOfLife.WPF.ViewModels
             _gameState.Update(_gameBoard.CalculateNextStep());
 
             UpdateStatistics(); 
-            RefreshDisplay(); 
+        }
+
+        private void ExecuteRandomize()
+        {
+            _gameBoard.GenerateRandom();
+            ResetState();
+
+            UpdateStatistics();
+        }
+
+        private void ExecuteReset()
+        {
+            _gameBoard.ClearBoard();
+            ResetState();
+
+            UpdateStatistics();
         }
 
         private void RefreshDisplay()
@@ -102,6 +119,13 @@ namespace GameOfLife.WPF.ViewModels
             GenerationCount = _gameState.GenerationCount;
             CellsBorn = _gameState.TotalCellsBorn;
             CellsDied = _gameState.TotalCellsDied;
+
+            RefreshDisplay();
+        }
+
+        private void ResetState()
+        {
+            _gameState.Reset();
         }
     }
 }

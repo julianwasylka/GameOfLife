@@ -6,11 +6,9 @@ namespace GameOfLife.WPF.Converters
 {
     public class CellPositionConverter : IValueConverter
     {
-        private const int CellSize = 5;
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (int)value * CellSize;
+            return (int)value * AppConfig.CellSize;
         }
 
         // Not needed
