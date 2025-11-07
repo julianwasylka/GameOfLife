@@ -12,15 +12,16 @@ namespace GameOfLife.WPF.ViewModels
         public ICommand StepCommand { get; }
         public ICommand RandomizeCommand { get; }
         public ICommand ClearCommand { get; }
+        public ICommand ApplySizeCommand { get; }
 
         private GameBoard _gameBoard;
         private GameState _gameState;
 
         public double BoardWidthPixels => _gameBoard.Width * AppConfig.CellSize;
         public double BoardHeightPixels => _gameBoard.Height * AppConfig.CellSize;
-
         public ObservableCollection<Point> CellsToDisplay { get; set; }
 
+        // UI properties
         private string _rulesText;
         public string RulesText
         {
@@ -66,6 +67,39 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
+        private double _currentZoom = 1.0;
+        public double CurrentZoom
+        {
+            get { return _currentZoom; }
+            set
+            {
+                _currentZoom = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _newBoardWidth;
+        public int NewBoardWidth
+        {
+            get { return _newBoardWidth; }
+            set
+            {
+                _newBoardWidth = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _newBoardHeight;
+        public int NewBoardHeight
+        {
+            get { return _newBoardHeight; }
+            set
+            {
+                _newBoardHeight = value;
+                OnPropertyChanged();
+            }
+        }
+
         public MainViewModel()
         {
             _gameBoard = new GameBoard();
@@ -76,17 +110,23 @@ namespace GameOfLife.WPF.ViewModels
 
             StepCommand = new RelayCommand(ExecuteStep);
             RandomizeCommand = new RelayCommand(ExecuteRandomize);
-            ClearCommand = new RelayCommand(ExecuteReset);
+            ClearCommand = new RelayCommand(ExecuteReset); 
+            ApplySizeCommand = new RelayCommand(ExecuteApplySize);
+
+            NewBoardWidth = _gameBoard.Width;
+            NewBoardHeight = _gameBoard.Height;
 
             _gameBoard.GenerateRandom();
             UpdateStatistics();
+            RefreshDisplay();
         }
 
         private void ExecuteStep()
         {
             _gameState.Update(_gameBoard.CalculateNextStep());
 
-            UpdateStatistics(); 
+            UpdateStatistics();
+            RefreshDisplay();
         }
 
         private void ExecuteRandomize()
@@ -95,6 +135,7 @@ namespace GameOfLife.WPF.ViewModels
             ResetState();
 
             UpdateStatistics();
+            RefreshDisplay();
         }
 
         private void ExecuteReset()
@@ -103,6 +144,17 @@ namespace GameOfLife.WPF.ViewModels
             ResetState();
 
             UpdateStatistics();
+            RefreshDisplay();
+        }
+
+        private void ExecuteApplySize()
+        {
+            _gameBoard.Resize(NewBoardWidth, NewBoardHeight);
+
+            OnPropertyChanged(nameof(BoardWidthPixels));
+            OnPropertyChanged(nameof(BoardHeightPixels));
+
+            RefreshDisplay();
         }
 
         private void RefreshDisplay()
@@ -119,8 +171,6 @@ namespace GameOfLife.WPF.ViewModels
             GenerationCount = _gameState.GenerationCount;
             CellsBorn = _gameState.TotalCellsBorn;
             CellsDied = _gameState.TotalCellsDied;
-
-            RefreshDisplay();
         }
 
         private void ResetState()

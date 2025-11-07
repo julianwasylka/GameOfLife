@@ -3,20 +3,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GameOfLife.WPF"
+        
         xmlns:vm="clr-namespace:GameOfLife.WPF.ViewModels"
+        xmlns:local="clr-namespace:GameOfLife.WPF"
+        
         mc:Ignorable="d"
-        Title="Game Of Lifew" Height="500" Width="1000">
+        Title="Gra w Życie" Height="600" Width="900">
+
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" MinWidth="220" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Margin="10" MinWidth="200">
+        <StackPanel Grid.Column="0" Margin="10">
 
             <Label Content="Sterowanie" FontWeight="Bold" />
 
@@ -27,14 +31,40 @@
             <Button Content="Losuj" 
                     Command="{Binding RandomizeCommand}" 
                     Margin="0,0,0,5" />
+
             <Button Content="Wyczyść" 
                     Command="{Binding ClearCommand}" 
                     Margin="0,0,0,5" />
+
             <Separator Margin="0,10" />
+
+            <Label Content="Konfiguracja" FontWeight="Bold" />
 
             <Label Content="Reguły (np. B3/S23)" />
             <TextBox Text="{Binding RulesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                 Margin="0,0,0,10" />
+                     Margin="0,0,0,10" />
+
+            <Label Content="Rozmiar planszy (Szerokość / Wysokość)" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Text="{Binding NewBoardWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Width="60" />
+                <TextBlock Text=" x " VerticalAlignment="Center" />
+                <TextBox Text="{Binding NewBoardHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Width="60" />
+            </StackPanel>
+            <Button Content="Zastosuj Rozmiar" 
+                    Command="{Binding ApplySizeCommand}" 
+                    Margin="0,5" />
+            <Separator Margin="0,10" />
+
+            <Label Content="Zoom" />
+            <Slider Value="{Binding CurrentZoom, Mode=TwoWay}"
+                    Minimum="0.1" 
+                    Maximum="5.0" 
+                    TickFrequency="0.1" 
+                    Margin="0,0,0,10"/>
+
+            <Separator Margin="0,10" />
 
             <Label Content="Statystyki" FontWeight="Bold" />
             <StackPanel Orientation="Horizontal">
@@ -51,17 +81,28 @@
                 <TextBlock Text="Zmarli: " />
                 <TextBlock Text="{Binding CellsDied}" FontWeight="Medium" />
             </StackPanel>
-
         </StackPanel>
 
-        <Viewbox Grid.Column="1" Stretch="Uniform">
+        <ScrollViewer Grid.Column="1" 
+                      HorizontalScrollBarVisibility="Auto" 
+                      VerticalScrollBarVisibility="Auto">
 
-            <ItemsControl ItemsSource="{Binding CellsToDisplay}">
+            <ItemsControl ItemsSource="{Binding CellsToDisplay}"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+
+                <ItemsControl.LayoutTransform>
+                    <ScaleTransform ScaleX="{Binding CurrentZoom}" 
+                                    ScaleY="{Binding CurrentZoom}" />
+                </ItemsControl.LayoutTransform>
+
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas Background="LightGray" 
-                            Width="{Binding Path=DataContext.BoardWidthPixels, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                            Height="{Binding Path=DataContext.BoardHeightPixels, RelativeSource={RelativeSource AncestorType=ItemsControl}}"/>
+                        <Canvas Background="LightGray"
+                                
+                                Width="{Binding BoardWidthPixels}"
+                                Height="{Binding BoardHeightPixels}">
+                        </Canvas>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
@@ -74,13 +115,13 @@
                 </ItemsControl.ItemTemplate>
 
                 <ItemsControl.ItemContainerStyle>
-                    <Style>
+                    <Style TargetType="ContentPresenter">
                         <Setter Property="Canvas.Left" Value="{Binding X, Converter={StaticResource CellPositionConverter}}" />
                         <Setter Property="Canvas.Top" Value="{Binding Y, Converter={StaticResource CellPositionConverter}}" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>
-            </ItemsControl>
 
-        </Viewbox>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
 </Window>

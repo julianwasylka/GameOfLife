@@ -10,7 +10,7 @@ This checklist tracks the planned features for the project.
 
 ### ⚙️ Core Simulation & Controls
 
-* [ ] **Custom Board Size:** Allow the user to define board dimensions (e.g., 100x100 or larger).
+* [X] **Custom Board Size:** Allow the user to define board dimensions (e.g., 100x100 or larger).
 * [ ] **Manual Editing:** Allow manual toggling of cell states (alive/dead) when the simulation is paused.
 * [x] **Clear and Randomize Board:** A function to populate the board with a random state.
 * [ ] **Simulation Execution:**
@@ -36,9 +36,9 @@ This checklist tracks the planned features for the project.
 
 * [x] **Live Statistics:** Display running counters for:
     * [x] Generation count.
-    * [x] Number of cells born in the last step.
-    * [x] Number of cells that died in the last step.
-* [ ] **Smooth Zoom & Pan:**
-    * [ ] Implement smooth zooming.
-    * [ ] Ensure the *entire* board simulation continues to run ("live") even when zoomed in on a small fragment.
+    * [x] Number of cells born in total.
+    * [x] Number of cells that died in total.
+* [x] **Smooth Zoom & Pan:**
+    * [x] Implement smooth zooming.
+    * [x] Ensure the *entire* board simulation continues to run ("live") even when zoomed in on a small fragment.
 * [ ] **Visual Customization:** Provide simple options to change the presentation of cells (e.g., color and shape).

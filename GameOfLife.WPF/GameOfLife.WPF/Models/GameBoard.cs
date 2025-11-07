@@ -10,8 +10,8 @@ namespace GameOfLife.WPF.Models
     public class GameBoard
     {
         public GameRule Rules { get; set; }
-        public int Width { get; set; } = 50;
-        public int Height { get; set; } = 50;
+        public int Width { get; set; } = 100;
+        public int Height { get; set; } = 100;
         public HashSet<Point> AliveCells { get; private set; } = new HashSet<Point>();
 
         private Dictionary<Point, int> _currentNeighbours = new Dictionary<Point, int>();
@@ -98,6 +98,21 @@ namespace GameOfLife.WPF.Models
                         AliveCells.Add(new Point(x, y));
                     }
                 }
+            }
+        }
+
+        public void Resize(int newWidth, int newHeight)
+        {
+            Width = newWidth;
+            Height = newHeight;
+
+            var cellsToRemove = AliveCells.Where(cell =>
+                cell.X >= Width || cell.Y >= Height
+            ).ToList();
+
+            foreach (var cell in cellsToRemove)
+            {
+                AliveCells.Remove(cell);
             }
         }
 
