@@ -1,13 +1,22 @@
 ﻿using GameOfLife.WPF.Models;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Windows.Input;
+using GameOfLife.WPF.Commands;
 
 namespace GameOfLife.WPF.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
+        // Commands
+        public ICommand StepCommand { get; }
+
         private GameBoard _gameBoard;
         private GameState _gameState;
+
+        private const int CellSize = 5;
+        public int BoardWidthPixels => _gameBoard.Width * CellSize;
+        public int BoardHeightPixels => _gameBoard.Height * CellSize;
 
         public ObservableCollection<Point> CellsToDisplay { get; set; }
 
@@ -65,8 +74,18 @@ namespace GameOfLife.WPF.ViewModels
             RulesText = "B3/S23";
             UpdateStatistics();
 
+            StepCommand = new RelayCommand(ExecuteStep);
+
             _gameBoard.GenerateRandom(0.25);
             RefreshDisplay();
+        }
+
+        private void ExecuteStep()
+        {
+            _gameState.Update(_gameBoard.CalculateNextStep());
+
+            UpdateStatistics(); 
+            RefreshDisplay(); 
         }
 
         private void RefreshDisplay()
