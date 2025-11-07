@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:GameOfLife.WPF"
+             xmlns:converters="clr-namespace:GameOfLife.WPF.Converters"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-         
+        <converters:CellPositionConverter x:Key="CellPositionConverter" />
     </Application.Resources>
 </Application>

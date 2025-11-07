@@ -11,6 +11,27 @@
         <vm:MainViewModel/>
     </Window.DataContext>
     <Grid>
+        <ItemsControl ItemsSource="{Binding CellsToDisplay}">
 
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Background="LightGray" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Rectangle Fill="Black" Width="5" Height="5" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Canvas.Left" Value="{Binding X, Converter={StaticResource CellPositionConverter}}" />
+                    <Setter Property="Canvas.Top" Value="{Binding Y, Converter={StaticResource CellPositionConverter}}" />
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+
+        </ItemsControl>
     </Grid>
 </Window>

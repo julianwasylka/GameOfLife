@@ -9,7 +9,7 @@ namespace GameOfLife.WPF.Models
 {
     public class GameBoard
     {
-        public GameRule Rules { get; set; } = GameRule.Parse("B3/S23");
+        public GameRule Rules { get; set; }
         public int Width { get; set; } = 50;
         public int Height { get; set; } = 50;
         public HashSet<Point> AliveCells { get; private set; } = new HashSet<Point>();
