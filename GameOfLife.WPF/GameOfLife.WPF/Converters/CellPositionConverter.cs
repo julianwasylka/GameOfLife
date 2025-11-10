@@ -14,7 +14,9 @@ namespace GameOfLife.WPF.Converters
         // Not needed
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            double pixelValue = (double)value;
+
+            return (int)(pixelValue / AppConfig.CellSize);
         }
     }
 }

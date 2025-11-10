@@ -113,7 +113,8 @@
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas Background="LightGray">
+                        <Canvas Background="LightGray"
+                                MouseLeftButtonDown="BoardCanvas_MouseLeftButtonDown">
 
                             <Canvas.Width>
                                 <MultiBinding Converter="{StaticResource BoardSizeToPixelsConverter}">

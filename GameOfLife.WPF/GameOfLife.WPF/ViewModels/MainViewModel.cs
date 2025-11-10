@@ -16,6 +16,7 @@ namespace GameOfLife.WPF.ViewModels
         public ICommand ApplySizeCommand { get; }
         public ICommand StartCommand { get; }
         public ICommand StopCommand { get; }
+        public ICommand ToggleCellCommand { get; }
 
         private GameBoard _gameBoard;
         private GameState _gameState;
@@ -131,6 +132,7 @@ namespace GameOfLife.WPF.ViewModels
             ApplySizeCommand = new RelayCommand(ExecuteApplySize);
             StartCommand = new RelayCommand(ExecuteStart, () => !_isRunning);
             StopCommand = new RelayCommand(ExecuteStop, () => _isRunning);
+            ToggleCellCommand = new RelayCommand<Point>(ExecuteToggleCell);
 
             NewBoardWidth = _gameBoard.Width;
             NewBoardHeight = _gameBoard.Height;
@@ -239,6 +241,15 @@ namespace GameOfLife.WPF.ViewModels
             {
                 CommandManager.InvalidateRequerySuggested();
             });
+        }
+
+        private void ExecuteToggleCell(Point position)
+        {
+            if (_isRunning) return;
+
+            _gameBoard.ToggleCell(position);
+
+            RefreshDisplay();
         }
 
         private void ResetState()

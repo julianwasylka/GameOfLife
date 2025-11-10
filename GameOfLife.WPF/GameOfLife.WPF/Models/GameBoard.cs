@@ -116,6 +116,23 @@ namespace GameOfLife.WPF.Models
             }
         }
 
+        public void ToggleCell(Point position)
+        {
+            if (position.X < 0 || position.X >= Width || position.Y < 0 || position.Y >= Height)
+            {
+                return;
+            }
+
+            if (AliveCells.Contains(position))
+            {
+                AliveCells.Remove(position);
+            }
+            else
+            {
+                AliveCells.Add(position);
+            }
+        }
+
         public void ClearBoard()
         {
             AliveCells.Clear();
