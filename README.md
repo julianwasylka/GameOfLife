@@ -23,9 +23,9 @@ This checklist tracks the planned features for the project.
 
 ### 💾 Rules & State Management
 
-* [ ] **File I/O:**
-    * [ ] **Save State:** Save the current state (board configuration + rules) to a text file.
-    * [ ] **Load State:** Load a state (board + rules) from a text file.
+* [x] **File I/O:**
+    * [x] **Save State:** Save the current state (board configuration + rules) to a text file.
+    * [x] **Load State:** Load a state (board + rules) from a text file.
 * [x] **Customizable Rules:** Implement configurable rules using the **B/S (Born/Survives) notation**.
     * *Example: Conway's classic rules would be input as `B3/S23`.*
 * [x] **Pattern Library:** Allow the user to place pre-defined "interesting" patterns (like gliders, oscillators, etc.) onto the current board.

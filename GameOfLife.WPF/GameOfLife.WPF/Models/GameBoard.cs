@@ -151,5 +151,13 @@ namespace GameOfLife.WPF.Models
         {
             AliveCells.Clear();
         }
+
+        public void SetBoardState(int width, int height, GameRule rules, HashSet<Point> aliveCells)
+        {
+            Width = width;
+            Height = height;
+            Rules = rules;
+            AliveCells = aliveCells;
+        }
     }
 }

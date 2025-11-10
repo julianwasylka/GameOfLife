@@ -1,4 +1,7 @@
-﻿using GameOfLife.WPF.Models;
+﻿using Microsoft.Win32;
+using System.IO;
+using System.Text;
+using GameOfLife.WPF.Models;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -18,6 +21,8 @@ namespace GameOfLife.WPF.ViewModels
         public ICommand StopCommand { get; }
         public ICommand ToggleCellCommand { get; }
         public ICommand ClearPatternSelectionCommand { get; }
+        public ICommand SaveCommand { get; }
+        public ICommand LoadCommand { get; }
 
         private GameBoard _gameBoard;
         private GameState _gameState;
@@ -154,14 +159,16 @@ namespace GameOfLife.WPF.ViewModels
             _simulationSpeed = 100;
             _currentZoom = 1.0;
 
-            StepCommand = new RelayCommand(ExecuteStep);
-            RandomizeCommand = new RelayCommand(ExecuteRandomize);
-            ClearCommand = new RelayCommand(ExecuteReset); 
+            StepCommand = new RelayCommand(ExecuteStep, () => !_isRunning);
+            RandomizeCommand = new RelayCommand(ExecuteRandomize, () => !_isRunning);
+            ClearCommand = new RelayCommand(ExecuteReset, () => !_isRunning); 
             ApplySizeCommand = new RelayCommand(ExecuteApplySize);
             StartCommand = new RelayCommand(ExecuteStart, () => !_isRunning);
             StopCommand = new RelayCommand(ExecuteStop, () => _isRunning);
-            ToggleCellCommand = new RelayCommand<Point>(ExecuteToggleCell);
+            ToggleCellCommand = new RelayCommand<Point>(ExecuteToggleCell, () => !_isRunning);
             ClearPatternSelectionCommand = new RelayCommand(() => SelectedPattern = null);
+            SaveCommand = new RelayCommand(ExecuteSave, () => !_isRunning);
+            LoadCommand = new RelayCommand(ExecuteLoad, () => !_isRunning);
 
             NewBoardWidth = _gameBoard.Width;
             NewBoardHeight = _gameBoard.Height;
@@ -291,6 +298,95 @@ namespace GameOfLife.WPF.ViewModels
         private void ResetState()
         {
             _gameState.Reset();
+        }
+
+        private void ExecuteSave()
+        {
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Filter = "Plik tekstowy (*.txt)|*.txt|Wszystkie pliki (*.*)|*.*",
+                Title = "Zapisz stan gry",
+                FileName = "save.txt",
+                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var sb = new StringBuilder();
+
+                    sb.AppendLine(_gameBoard.Rules.ToString());
+
+                    sb.AppendLine(_gameBoard.Width.ToString());
+                    sb.AppendLine(_gameBoard.Height.ToString());
+
+                    foreach (var cell in _gameBoard.AliveCells)
+                    {
+                        sb.AppendLine($"{cell.X};{cell.Y}");
+                    }
+
+                    File.WriteAllText(dialog.FileName, sb.ToString());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Błąd podczas zapisu pliku: {ex.Message}", "Błąd zapisu", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void ExecuteLoad()
+        {
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Filter = "Plik tekstowy (*.txt)|*.txt|Wszystkie pliki (*.*)|*.*",
+                Title = "Wczytaj stan gry",
+
+                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var lines = File.ReadAllLines(dialog.FileName);
+
+                    var rules = GameRule.Parse(lines[0]);
+
+                    var width = int.Parse(lines[1]);
+                    var height = int.Parse(lines[2]);
+
+                    var aliveCells = new HashSet<Point>();
+                    for (int i = 3; i < lines.Length; i++)
+                    {
+                        var parts = lines[i].Split(';');
+                        if (parts.Length == 2)
+                        {
+                            int x = int.Parse(parts[0]);
+                            int y = int.Parse(parts[1]);
+                            aliveCells.Add(new Point(x, y));
+                        }
+                    }
+
+                    _gameBoard.SetBoardState(width, height, rules, aliveCells);
+
+                    _gameState.Reset();
+
+                    RulesText = rules.ToString(); 
+                    NewBoardWidth = width;      
+                    NewBoardHeight = height;
+
+                    OnPropertyChanged(nameof(BoardWidth));
+                    OnPropertyChanged(nameof(BoardHeight));
+
+                    UpdateStatistics();
+                    RefreshDisplay();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Błąd podczas wczytywania pliku: {ex.Message}", "Błąd odczytu", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

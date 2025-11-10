@@ -58,7 +58,7 @@ namespace GameOfLife.WPF.Commands
         #region Fields
 
         readonly Action<T> _execute = null;
-        readonly Predicate<T> _canExecute = null;
+        readonly Func<bool> _canExecute;
 
         #endregion
 
@@ -79,7 +79,7 @@ namespace GameOfLife.WPF.Commands
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>
-        public RelayCommand(Action<T> execute, Predicate<T> canExecute)
+        public RelayCommand(Action<T> execute, Func<bool> canExecute)
         {
             if (execute == null)
                 throw new ArgumentNullException("execute");
@@ -101,7 +101,7 @@ namespace GameOfLife.WPF.Commands
         ///</returns>
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null || _canExecute((T)parameter);
+            return _canExecute == null || _canExecute();
         }
 
         ///<summary>
