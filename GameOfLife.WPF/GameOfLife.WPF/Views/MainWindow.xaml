@@ -98,10 +98,27 @@
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas Background="LightGray"
-                                
-                                Width="{Binding BoardWidthPixels}"
-                                Height="{Binding BoardHeightPixels}">
+                        <Canvas Background="LightGray">
+
+                            <Canvas.Width>
+                                <MultiBinding Converter="{StaticResource BoardSizeToPixelsConverter}">
+
+                                    <Binding Path="BoardWidth" />
+
+                                    <Binding Source="{x:Static local:AppConfig.CellSize}" />
+
+                                </MultiBinding>
+                            </Canvas.Width>
+
+                            <Canvas.Height>
+                                <MultiBinding Converter="{StaticResource BoardSizeToPixelsConverter}">
+
+                                    <Binding Path="BoardHeight" />
+
+                                    <Binding Source="{x:Static local:AppConfig.CellSize}" />
+
+                                </MultiBinding>
+                            </Canvas.Height>
                         </Canvas>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>

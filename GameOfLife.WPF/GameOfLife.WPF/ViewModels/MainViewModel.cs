@@ -17,8 +17,8 @@ namespace GameOfLife.WPF.ViewModels
         private GameBoard _gameBoard;
         private GameState _gameState;
 
-        public double BoardWidthPixels => _gameBoard.Width * AppConfig.CellSize;
-        public double BoardHeightPixels => _gameBoard.Height * AppConfig.CellSize;
+        public double BoardWidth => _gameBoard.Width;
+        public double BoardHeight => _gameBoard.Height;
         public ObservableCollection<Point> CellsToDisplay { get; set; }
 
         // UI properties
@@ -151,8 +151,8 @@ namespace GameOfLife.WPF.ViewModels
         {
             _gameBoard.Resize(NewBoardWidth, NewBoardHeight);
 
-            OnPropertyChanged(nameof(BoardWidthPixels));
-            OnPropertyChanged(nameof(BoardHeightPixels));
+            OnPropertyChanged(nameof(BoardWidth));
+            OnPropertyChanged(nameof(BoardHeight));
 
             RefreshDisplay();
         }

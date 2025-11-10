@@ -10,9 +10,9 @@ namespace GameOfLife.WPF.Converters
         {
             try
             {
-                int boardSize = (int)values[0];
+                int boardSize = System.Convert.ToInt32(values[0]);
 
-                int cellSize = (int)values[1];
+                int cellSize = System.Convert.ToInt32(values[1]);
 
                 return (double)(boardSize * cellSize);
             }

@@ -6,5 +6,6 @@
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
         <converters:CellPositionConverter x:Key="CellPositionConverter" />
+        <converters:BoardSizeToPixelsConverter x:Key="BoardSizeToPixelsConverter" />
     </Application.Resources>
 </Application>

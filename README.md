@@ -10,7 +10,7 @@ This checklist tracks the planned features for the project.
 
 ### ⚙️ Core Simulation & Controls
 
-* [X] **Custom Board Size:** Allow the user to define board dimensions (e.g., 100x100 or larger).
+* [x] **Custom Board Size:** Allow the user to define board dimensions (e.g., 100x100 or larger).
 * [ ] **Manual Editing:** Allow manual toggling of cell states (alive/dead) when the simulation is paused.
 * [x] **Clear and Randomize Board:** A function to populate the board with a random state.
 * [ ] **Simulation Execution:**
