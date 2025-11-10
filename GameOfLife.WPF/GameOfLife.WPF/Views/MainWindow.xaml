@@ -48,10 +48,18 @@
                     Margin="0,0,0,5" />
 
             <Button Content="Wyczyść" 
-                    Command="{Binding ClearCommand}" 
+                    Command="{Binding ClearCommand}"/>
+
+            <Label Content="Wklej wzorzec"/>
+            <ComboBox ItemsSource="{Binding AvailablePatterns}"
+                      SelectedItem="{Binding SelectedPattern, Mode=TwoWay}"
+                      DisplayMemberPath="Name"
+                      Margin="0,0,0,5" />
+            <Button Content="Wyczyść wybór wzorca"
+                    Command="{Binding ClearPatternSelectionCommand}"
                     Margin="0,0,0,5" />
 
-            <Separator Margin="0,10" />
+            <Separator />
 
             <Label Content="Konfiguracja" FontWeight="Bold" />
 
@@ -59,18 +67,22 @@
             <TextBox Text="{Binding RulesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                      Margin="0,0,0,10" />
 
-            <Label Content="Rozmiar planszy (Szerokość / Wysokość)" Margin="0,10,0,0"/>
+            <Label Content="Rozmiar planszy" Margin="0,10,0,0"/>
             <StackPanel Orientation="Horizontal">
                 <TextBox Text="{Binding NewBoardWidth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                         Width="60" />
+                         Width="50" />
                 <TextBlock Text=" x " VerticalAlignment="Center" />
                 <TextBox Text="{Binding NewBoardHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                         Width="60" />
+                         Width="50" />
             </StackPanel>
             <Button Content="Zastosuj Rozmiar" 
                     Command="{Binding ApplySizeCommand}" 
                     Margin="0,5" />
-            <Separator Margin="0,10" />
+
+            <CheckBox Content="Użyj kółek zamiast kwadratów"
+                      IsChecked="{Binding UseCircles, Mode=TwoWay}"
+                      Margin="0,10" />
+            <Separator/>
 
             <Label Content="Zoom" />
             <Slider Value="{Binding CurrentZoom, Mode=TwoWay}"
@@ -141,9 +153,31 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Rectangle Fill="Black" 
-                                   Width="{x:Static local:AppConfig.CellSize}" 
-                                   Height="{x:Static local:AppConfig.CellSize}" />
+
+                        <Grid>
+
+                            <Rectangle x:Name="SquareShape" 
+                                       Fill="Black" 
+                                       Width="{x:Static local:AppConfig.CellSize}" 
+                                       Height="{x:Static local:AppConfig.CellSize}"
+                                       Visibility="Visible" />
+
+                            <Ellipse x:Name="CircleShape" 
+                                     Fill="DarkBlue"  Width="{x:Static local:AppConfig.CellSize}" 
+                                     Height="{x:Static local:AppConfig.CellSize}"
+                                     Visibility="Collapsed" />
+                        </Grid>
+
+                        <DataTemplate.Triggers>
+
+                            <DataTrigger Binding="{Binding DataContext.UseCircles, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+
+                                <Setter TargetName="SquareShape" Property="Visibility" Value="Collapsed" />
+                                <Setter TargetName="CircleShape" Property="Visibility" Value="Visible" />
+
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
 

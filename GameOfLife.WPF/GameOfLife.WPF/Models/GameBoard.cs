@@ -132,6 +132,20 @@ namespace GameOfLife.WPF.Models
                 AliveCells.Add(position);
             }
         }
+        public void PastePattern(Point position, Pattern pattern)
+        {
+            if (pattern == null) return;
+
+            foreach (var p in pattern.Points)
+            {
+                Point newPoint = new Point(position.X + p.X, position.Y + p.Y);
+
+                if (CheckBoundaries(newPoint.X, newPoint.Y) && !AliveCells.Contains(newPoint))
+                {
+                    AliveCells.Add(newPoint);
+                }
+            }
+        }
 
         public void ClearBoard()
         {

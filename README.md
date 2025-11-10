@@ -28,7 +28,7 @@ This checklist tracks the planned features for the project.
     * [ ] **Load State:** Load a state (board + rules) from a text file.
 * [x] **Customizable Rules:** Implement configurable rules using the **B/S (Born/Survives) notation**.
     * *Example: Conway's classic rules would be input as `B3/S23`.*
-* [ ] **Pattern Library:** Allow the user to place pre-defined "interesting" patterns (like gliders, oscillators, etc.) onto the current board.
+* [x] **Pattern Library:** Allow the user to place pre-defined "interesting" patterns (like gliders, oscillators, etc.) onto the current board.
 
 ---
 
@@ -41,4 +41,4 @@ This checklist tracks the planned features for the project.
 * [x] **Smooth Zoom & Pan:**
     * [x] Implement smooth zooming.
     * [x] Ensure the *entire* board simulation continues to run ("live") even when zoomed in on a small fragment.
-* [ ] **Visual Customization:** Provide simple options to change the presentation of cells (e.g., color and shape).
+* [x] **Visual Customization:** Provide simple options to change the presentation of cells (e.g., color and shape).

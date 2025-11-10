@@ -17,6 +17,7 @@ namespace GameOfLife.WPF.ViewModels
         public ICommand StartCommand { get; }
         public ICommand StopCommand { get; }
         public ICommand ToggleCellCommand { get; }
+        public ICommand ClearPatternSelectionCommand { get; }
 
         private GameBoard _gameBoard;
         private GameState _gameState;
@@ -24,8 +25,9 @@ namespace GameOfLife.WPF.ViewModels
         public double BoardWidth => _gameBoard.Width;
         public double BoardHeight => _gameBoard.Height;
         public ObservableCollection<Point> CellsToDisplay { get; set; }
+        public List<Pattern> AvailablePatterns { get; set; }
 
-        private bool _isRunning = false;
+        private bool _isRunning;
         private CancellationTokenSource _cts;
 
         // UI properties
@@ -74,7 +76,7 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
-        private double _currentZoom = 1.0;
+        private double _currentZoom;
         public double CurrentZoom
         {
             get { return _currentZoom; }
@@ -107,7 +109,7 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
-        private int _simulationSpeed = 100;
+        private int _simulationSpeed;
         public int SimulationSpeed
         {
             get { return _simulationSpeed; }
@@ -118,13 +120,39 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
+        private Pattern _selectedPattern;
+        public Pattern SelectedPattern
+        {
+            get { return _selectedPattern; }
+            set
+            {
+                _selectedPattern = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _useCircles = false;
+        public bool UseCircles
+        {
+            get { return _useCircles; }
+            set
+            {
+                _useCircles = value;
+                OnPropertyChanged();
+            }
+        }
+
         public MainViewModel()
         {
             _gameBoard = new GameBoard();
             _gameState = new GameState();
             CellsToDisplay = new ObservableCollection<Point>();
+            AvailablePatterns = PatternLibrary.GetPatterns();
 
             RulesText = "B3/S23";
+            _isRunning = false;
+            _simulationSpeed = 100;
+            _currentZoom = 1.0;
 
             StepCommand = new RelayCommand(ExecuteStep);
             RandomizeCommand = new RelayCommand(ExecuteRandomize);
@@ -133,6 +161,7 @@ namespace GameOfLife.WPF.ViewModels
             StartCommand = new RelayCommand(ExecuteStart, () => !_isRunning);
             StopCommand = new RelayCommand(ExecuteStop, () => _isRunning);
             ToggleCellCommand = new RelayCommand<Point>(ExecuteToggleCell);
+            ClearPatternSelectionCommand = new RelayCommand(() => SelectedPattern = null);
 
             NewBoardWidth = _gameBoard.Width;
             NewBoardHeight = _gameBoard.Height;
@@ -247,7 +276,14 @@ namespace GameOfLife.WPF.ViewModels
         {
             if (_isRunning) return;
 
-            _gameBoard.ToggleCell(position);
+            if (SelectedPattern != null)
+            {
+                _gameBoard.PastePattern(position, SelectedPattern);
+            }
+            else
+            {
+                _gameBoard.ToggleCell(position);
+            }
 
             RefreshDisplay();
         }
