@@ -24,6 +24,21 @@
 
             <Label Content="Sterowanie" FontWeight="Bold" />
 
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                <Button Content="Start" 
+                        Command="{Binding StartCommand}" 
+                        Margin="0,5,2,5" Width="110" />
+                <Button Content="Stop" 
+                        Command="{Binding StopCommand}" 
+                        Margin="2,5,0,5" Width="110"/>
+
+            </StackPanel>
+            <Label Content="Prędkość (ms)"/>
+            <Slider Value="{Binding SimulationSpeed, Mode=TwoWay}"
+                    Minimum="50" 
+                    Maximum="1000" 
+                    TickFrequency="10" />
+
             <Button Content="Krok" 
                     Command="{Binding StepCommand}" 
                     Margin="0,5" />

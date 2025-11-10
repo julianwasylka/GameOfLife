@@ -15,8 +15,8 @@ This checklist tracks the planned features for the project.
 * [x] **Clear and Randomize Board:** A function to populate the board with a random state.
 * [ ] **Simulation Execution:**
     * [x] **Single Step:** Execute only one generation at a time.
-    * [ ] **Continuous Animation:** Run the simulation automatically.
-    * [ ] **Speed Control:** Include a slider or input to regulate the speed of the continuous animation.
+    * [x] **Continuous Animation:** Run the simulation automatically.
+    * [x] **Speed Control:** Include a slider or input to regulate the speed of the continuous animation.
     * [ ] **Pause & Edit:** Ability to pause the animation and return to the manual editing state.
 
 ---

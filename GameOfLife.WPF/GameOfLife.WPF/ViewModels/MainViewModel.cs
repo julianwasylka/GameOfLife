@@ -1,8 +1,9 @@
 ﻿using GameOfLife.WPF.Models;
 using System.Collections.ObjectModel;
-using System.Drawing;
+using System.Windows;
 using System.Windows.Input;
 using GameOfLife.WPF.Commands;
+using Point = System.Drawing.Point;
 
 namespace GameOfLife.WPF.ViewModels
 {
@@ -13,6 +14,8 @@ namespace GameOfLife.WPF.ViewModels
         public ICommand RandomizeCommand { get; }
         public ICommand ClearCommand { get; }
         public ICommand ApplySizeCommand { get; }
+        public ICommand StartCommand { get; }
+        public ICommand StopCommand { get; }
 
         private GameBoard _gameBoard;
         private GameState _gameState;
@@ -20,6 +23,9 @@ namespace GameOfLife.WPF.ViewModels
         public double BoardWidth => _gameBoard.Width;
         public double BoardHeight => _gameBoard.Height;
         public ObservableCollection<Point> CellsToDisplay { get; set; }
+
+        private bool _isRunning = false;
+        private CancellationTokenSource _cts;
 
         // UI properties
         private string _rulesText;
@@ -100,6 +106,17 @@ namespace GameOfLife.WPF.ViewModels
             }
         }
 
+        private int _simulationSpeed = 100;
+        public int SimulationSpeed
+        {
+            get { return _simulationSpeed; }
+            set
+            {
+                _simulationSpeed = value;
+                OnPropertyChanged();
+            }
+        }
+
         public MainViewModel()
         {
             _gameBoard = new GameBoard();
@@ -112,6 +129,8 @@ namespace GameOfLife.WPF.ViewModels
             RandomizeCommand = new RelayCommand(ExecuteRandomize);
             ClearCommand = new RelayCommand(ExecuteReset); 
             ApplySizeCommand = new RelayCommand(ExecuteApplySize);
+            StartCommand = new RelayCommand(ExecuteStart, () => !_isRunning);
+            StopCommand = new RelayCommand(ExecuteStop, () => _isRunning);
 
             NewBoardWidth = _gameBoard.Width;
             NewBoardHeight = _gameBoard.Height;
@@ -171,6 +190,55 @@ namespace GameOfLife.WPF.ViewModels
             GenerationCount = _gameState.GenerationCount;
             CellsBorn = _gameState.TotalCellsBorn;
             CellsDied = _gameState.TotalCellsDied;
+        }
+
+        private void ExecuteStart()
+        {
+            _isRunning = true;
+            _cts = new CancellationTokenSource();
+
+            Task.Run(() => RunSimulation(_cts.Token));
+
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+        private void ExecuteStop()
+        {
+            _isRunning = false;
+            _cts?.Cancel(); 
+
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+        private async Task RunSimulation(CancellationToken token)
+        {
+            while (_isRunning)
+            {
+                StepResult result = _gameBoard.CalculateNextStep();
+                _gameState.Update(result);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    UpdateStatistics(); 
+                    RefreshDisplay(); 
+                });
+
+                try
+                {
+                    int delay = 1050 - SimulationSpeed;
+                    await Task.Delay(delay, token);
+                }
+                catch (TaskCanceledException)
+                {
+                    break;
+                }
+            }
+
+            _isRunning = false;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                CommandManager.InvalidateRequerySuggested();
+            });
         }
 
         private void ResetState()
