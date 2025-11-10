@@ -33,6 +33,7 @@ namespace GameOfLife.WPF.ViewModels
         public List<Pattern> AvailablePatterns { get; set; }
 
         private bool _isRunning;
+        public bool IsRunning => _isRunning;
         private CancellationTokenSource _cts;
 
         // UI properties

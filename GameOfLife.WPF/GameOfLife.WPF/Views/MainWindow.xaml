@@ -110,11 +110,14 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <Button Content="Zapisz" 
                         Command="{Binding SaveCommand}" 
-                        Margin="0,5,2,5" Width="100"/>
+                        Margin="0,5,2,5" Width="110"/>
                 <Button Content="Wczytaj" 
                         Command="{Binding LoadCommand}" 
-                        Margin="2,5,0,5" Width="100"/>
+                        Margin="2,5,0,5" Width="110"/>
             </StackPanel>
+            <Button Content="Zapisz obraz (.png)" 
+                    Click="SaveImage_Click" 
+                    Margin="0,5" />
 
         </StackPanel>
 
@@ -122,7 +125,8 @@
                       HorizontalScrollBarVisibility="Auto" 
                       VerticalScrollBarVisibility="Auto">
 
-            <ItemsControl ItemsSource="{Binding CellsToDisplay}"
+            <ItemsControl x:Name="BoardControl"
+                          ItemsSource="{Binding CellsToDisplay}"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center">
 

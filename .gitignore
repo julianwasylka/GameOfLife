@@ -5,3 +5,4 @@ bin/
 /GameOfLife.WPF/GameOfLife.WPF/bin/
 /GameOfLife.WPF/GameOfLife.WPF/obj/
 *.txt
+*.png
