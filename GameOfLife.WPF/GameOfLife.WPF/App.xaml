@@ -7,5 +7,37 @@
     <Application.Resources>
         <converters:CellPositionConverter x:Key="CellPositionConverter" />
         <converters:BoardSizeToPixelsConverter x:Key="BoardSizeToPixelsConverter" />
+        <SolidColorBrush x:Key="Window.Background" Color="AliceBlue" />
+        <SolidColorBrush x:Key="Board.Background" Color="LightGray" />
+        <SolidColorBrush x:Key="Cell.Alive" Color="DarkOliveGreen" />
+
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="SaddleBrown" />
+            <Setter Property="Foreground" Value="AliceBlue" />
+            <Setter Property="Padding" Value="8,7" />
+            <Setter Property="Cursor" Value="Hand" />
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="3"
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF0099FF" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#FF4A4E5A" />
+                    <Setter Property="Foreground" Value="#FF9098A8" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>

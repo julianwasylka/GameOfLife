@@ -32,19 +32,23 @@ namespace GameOfLife.WPF.ViewModels
         public ObservableCollection<Point> CellsToDisplay { get; set; }
         public List<Pattern> AvailablePatterns { get; set; }
 
-        private bool _isRunning;
-        public bool IsRunning => _isRunning;
         private CancellationTokenSource _cts;
 
         // UI properties
+        private bool _isRunning;
+        public bool IsRunning
+        {
+            get => _isRunning;
+            set => SetProperty(ref _isRunning, value);
+        }
+
         private string _rulesText;
         public string RulesText
         {
-            get { return _rulesText; }
+            get => _rulesText;
             set
             {
-                _rulesText = value;
-                OnPropertyChanged();
+                SetProperty(ref _rulesText, value);
                 _gameBoard.Rules = GameRule.Parse(_rulesText);
             }
         }
@@ -52,100 +56,64 @@ namespace GameOfLife.WPF.ViewModels
         private int _generationCount;
         public int GenerationCount
         {
-            get { return _generationCount; }
-            set
-            {
-                _generationCount = value;
-                OnPropertyChanged();
-            }
+            get => _generationCount;
+            set => SetProperty(ref _generationCount, value);
         }
 
         private int _cellsBorn;
         public int CellsBorn
         {
-            get { return _cellsBorn; }
-            set
-            {
-                _cellsBorn = value;
-                OnPropertyChanged(); 
-            }
+            get => _cellsBorn;
+            set => SetProperty(ref _cellsBorn, value);
         }
 
         private int _cellsDied;
         public int CellsDied
         {
-            get { return _cellsDied; }
-            set
-            {
-                _cellsDied = value;
-                OnPropertyChanged();
-            }
+            get => _cellsDied;
+            set => SetProperty(ref _cellsDied, value);
         }
 
         private double _currentZoom;
         public double CurrentZoom
         {
-            get { return _currentZoom; }
-            set
-            {
-                _currentZoom = value;
-                OnPropertyChanged();
-            }
+            get => _currentZoom;
+            set => SetProperty(ref _currentZoom, value);
         }
 
         private int _newBoardWidth;
         public int NewBoardWidth
         {
-            get { return _newBoardWidth; }
-            set
-            {
-                _newBoardWidth = value;
-                OnPropertyChanged();
-            }
+            get => _newBoardWidth;
+            set => SetProperty(ref _newBoardWidth, value);
         }
 
         private int _newBoardHeight;
         public int NewBoardHeight
         {
-            get { return _newBoardHeight; }
-            set
-            {
-                _newBoardHeight = value;
-                OnPropertyChanged();
-            }
+            get => _newBoardHeight;
+            set => SetProperty(ref _newBoardHeight, value);
         }
 
         private int _simulationSpeed;
         public int SimulationSpeed
         {
-            get { return _simulationSpeed; }
-            set
-            {
-                _simulationSpeed = value;
-                OnPropertyChanged();
-            }
+            get => _simulationSpeed;
+            set => SetProperty(ref _simulationSpeed, value);
         }
 
         private Pattern _selectedPattern;
         public Pattern SelectedPattern
         {
-            get { return _selectedPattern; }
-            set
-            {
-                _selectedPattern = value;
-                OnPropertyChanged();
-            }
+            get => _selectedPattern;
+            set => SetProperty(ref _selectedPattern, value);
         }
 
-        private bool _useCircles = false;
+        private bool _useCircles;
         public bool UseCircles
         {
-            get { return _useCircles; }
-            set
-            {
-                _useCircles = value;
-                OnPropertyChanged();
-            }
+            get => _useCircles;
+            set => SetProperty(ref _useCircles, value);
         }
 
         public MainViewModel()
@@ -159,6 +127,7 @@ namespace GameOfLife.WPF.ViewModels
             _isRunning = false;
             _simulationSpeed = 100;
             _currentZoom = 1.0;
+            UseCircles = false;
 
             StepCommand = new RelayCommand(ExecuteStep, () => !_isRunning);
             RandomizeCommand = new RelayCommand(ExecuteRandomize, () => !_isRunning);
@@ -233,7 +202,7 @@ namespace GameOfLife.WPF.ViewModels
 
         private void ExecuteStart()
         {
-            _isRunning = true;
+            IsRunning = true;
             _cts = new CancellationTokenSource();
 
             Task.Run(() => RunSimulation(_cts.Token));
@@ -243,7 +212,7 @@ namespace GameOfLife.WPF.ViewModels
 
         private void ExecuteStop()
         {
-            _isRunning = false;
+            IsRunning = false;
             _cts?.Cancel(); 
 
             CommandManager.InvalidateRequerySuggested();
@@ -251,7 +220,7 @@ namespace GameOfLife.WPF.ViewModels
 
         private async Task RunSimulation(CancellationToken token)
         {
-            while (_isRunning)
+            while (IsRunning)
             {
                 StepResult result = _gameBoard.CalculateNextStep();
                 _gameState.Update(result);
@@ -264,7 +233,7 @@ namespace GameOfLife.WPF.ViewModels
 
                 try
                 {
-                    int delay = 1050 - SimulationSpeed;
+                    int delay = 1000 - SimulationSpeed;
                     await Task.Delay(delay, token);
                 }
                 catch (TaskCanceledException)
@@ -273,7 +242,7 @@ namespace GameOfLife.WPF.ViewModels
                 }
             }
 
-            _isRunning = false;
+            IsRunning = false;
             Application.Current.Dispatcher.Invoke(() =>
             {
                 CommandManager.InvalidateRequerySuggested();
@@ -282,7 +251,7 @@ namespace GameOfLife.WPF.ViewModels
 
         private void ExecuteToggleCell(Point position)
         {
-            if (_isRunning) return;
+            if (IsRunning) return;
 
             if (SelectedPattern != null)
             {

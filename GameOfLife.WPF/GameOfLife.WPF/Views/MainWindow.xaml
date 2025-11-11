@@ -8,7 +8,9 @@
         xmlns:local="clr-namespace:GameOfLife.WPF"
         
         mc:Ignorable="d"
-        Title="Gra w Życie" Height="700" Width="900">
+        Title="Gra w Życie" Height="700" Width="900"
+        
+        Background="{StaticResource Window.Background}">
 
     <Window.DataContext>
         <vm:MainViewModel/>
@@ -16,7 +18,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" MinWidth="220" />
+            <ColumnDefinition Width="265"/>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -27,16 +29,16 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <Button Content="Start" 
                         Command="{Binding StartCommand}" 
-                        Margin="0,5,2,5" Width="110" />
+                        Margin="0,5,2,5" Width="120" />
                 <Button Content="Stop" 
                         Command="{Binding StopCommand}" 
-                        Margin="2,5,0,5" Width="110"/>
+                        Margin="2,5,0,5" Width="120"/>
 
             </StackPanel>
-            <Label Content="Prędkość (ms)"/>
+            <Label Content="Prędkość"/>
             <Slider Value="{Binding SimulationSpeed, Mode=TwoWay}"
-                    Minimum="50" 
-                    Maximum="1000" 
+                    Minimum="0" 
+                    Maximum="700" 
                     TickFrequency="10" />
 
             <Button Content="Krok" 
@@ -110,10 +112,10 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <Button Content="Zapisz" 
                         Command="{Binding SaveCommand}" 
-                        Margin="0,5,2,5" Width="110"/>
+                        Margin="0,5,2,5" Width="120"/>
                 <Button Content="Wczytaj" 
                         Command="{Binding LoadCommand}" 
-                        Margin="2,5,0,5" Width="110"/>
+                        Margin="2,5,0,5" Width="120"/>
             </StackPanel>
             <Button Content="Zapisz obraz (.png)" 
                     Click="SaveImage_Click" 
@@ -137,7 +139,7 @@
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas Background="LightGray"
+                        <Canvas Background="{StaticResource Board.Background}"
                                 MouseLeftButtonDown="BoardCanvas_MouseLeftButtonDown">
 
                             <Canvas.Width>
@@ -169,7 +171,7 @@
                         <Grid>
 
                             <Rectangle x:Name="SquareShape" 
-                                       Fill="Black" 
+                                       Fill="{StaticResource Cell.Alive}" 
                                        Width="{x:Static local:AppConfig.CellSize}" 
                                        Height="{x:Static local:AppConfig.CellSize}"
                                        Visibility="Visible" />
